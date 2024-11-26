@@ -1,4 +1,5 @@
 # Byte-compiled / optimized / DLL files
+*png
 *pth
 temporal_fusion_transformer
 lightning_logs
