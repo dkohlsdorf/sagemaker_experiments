@@ -1,10 +1,8 @@
 '''
 How this will work:
 * Reading in some docs
-* Oolama encode those docs
+* Ollama encode those docs
 * Use in Memory index for RAG
-
-TODO: write your own query ... chapter 8 tutorial 1
 '''
 
 import sys
@@ -12,6 +10,7 @@ import os
 import pypdf 
 import ollama
 
+from langchain_core.prompts import PromptTemplate 
 from langchain_core.vectorstores import InMemoryVectorStore
 from langchain_text_splitters import CharacterTextSplitter
 from langchain_ollama import OllamaEmbeddings
@@ -50,8 +49,8 @@ def db(text):
     return db, embeddings
 
 
-def promt_template():
-    return PromtTemplate(
+def prompt_template():
+    return PromptTemplate(
         input_variables=['chunks_formatted', 'query'],
         template= """
         You are an exceptional customer support chatbot answering questions.
@@ -68,14 +67,14 @@ def promt_template():
     )
     
 
-def generate_answers(query, db, promt_template):
+def generate_answer(query, db, promt_template):
     llm = OllamaLLM(model='llama3.2:latest')    
     docs = db.similarity_search(query)
     retrieved_chunks = [doc.page_content for doc in docs]
     chunks_formatted = "\n\n".join(retrieved_docs)
     promt_formatted = promt_template.format(chunks_formatted=chunks_formatted, query=query)
-    answer = llm(promt_formatted)
-    return answer
+    answer = llm(promt_formatted)    
+    return answer, prompt_formatted
 
 
 if __name__ == '__main__':
@@ -84,6 +83,13 @@ if __name__ == '__main__':
     pages = pdf_pages(folder)
     text = split(pages)
     retriever_db, embeddings = db(text)
-    template = promt_template()
-    answer = generate_answer(query, retriever_db, template)
-    print(answer)
+    template = prompt_template()
+    answer, prompt = generate_answer(query, retriever_db, template)
+    print(f"""
+    ===========================================
+    {prompt}
+    ===========================================
+    {answer}
+    ===========================================
+    """)
+    
