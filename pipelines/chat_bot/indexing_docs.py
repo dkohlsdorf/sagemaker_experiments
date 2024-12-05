@@ -57,7 +57,7 @@ def prompt_template():
         
         You know the following information.
 
-        {chunks_fromatted}
+        {chunks_formatted}
 
         Answer the following question from a customer. Use only information from the previous
         context information. Do not invent stuff.
@@ -71,9 +71,9 @@ def generate_answer(query, db, promt_template):
     llm = OllamaLLM(model='llama3.2:latest')    
     docs = db.similarity_search(query)
     retrieved_chunks = [doc.page_content for doc in docs]
-    chunks_formatted = "\n\n".join(retrieved_docs)
-    promt_formatted = promt_template.format(chunks_formatted=chunks_formatted, query=query)
-    answer = llm(promt_formatted)    
+    chunks_formatted = "\n\n".join(retrieved_chunks)
+    prompt_formatted = promt_template.format(chunks_formatted=chunks_formatted, query=query)
+    answer = llm(prompt_formatted)    
     return answer, prompt_formatted
 
 
@@ -92,4 +92,3 @@ if __name__ == '__main__':
     {answer}
     ===========================================
     """)
-    
