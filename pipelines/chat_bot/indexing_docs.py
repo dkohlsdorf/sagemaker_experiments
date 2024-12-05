@@ -50,12 +50,32 @@ def db(text):
     return db, embeddings
 
 
-def build_chain(db):
-    return RetrieverQA.from_chain_type(
-        llm=OllamaLLM(model='llama3.2:latest'),
-        chain_type='stuff'
-        retriever=db.as_retriever()
+def promt_template():
+    return PromtTemplate(
+        input_variables=['chunks_formatted', 'query'],
+        template= """
+        You are an exceptional customer support chatbot answering questions.
+        
+        You know the following information.
+
+        {chunks_fromatted}
+
+        Answer the following question from a customer. Use only information from the previous
+        context information. Do not invent stuff.
+
+        Question: {query}
+        """
     )
+    
+
+def generate_answers(query, db, promt_template):
+    llm = OllamaLLM(model='llama3.2:latest')    
+    docs = db.similarity_search(query)
+    retrieved_chunks = [doc.page_content for doc in docs]
+    chunks_formatted = "\n\n".join(retrieved_docs)
+    promt_formatted = promt_template.format(chunks_formatted=chunks_formatted, query=query)
+    answer = llm(promt_formatted)
+    return answer
 
 
 if __name__ == '__main__':
@@ -64,5 +84,6 @@ if __name__ == '__main__':
     pages = pdf_pages(folder)
     text = split(pages)
     retriever_db, embeddings = db(text)
-    chain = build_chain(db)
-    print(chain.run(query))
+    template = promt_template()
+    answer = generate_answer(query, retriever_db, template)
+    print(answer)
