@@ -8,12 +8,8 @@ import sys
 import argparse
 import pandas as pd
 import collections
+
 from sklearn.preprocessing import MinMaxScaler    
-
-
-import subprocess
-subprocess.check_call([sys.executable, "-m", "pip", "install", "tensorflow==2.3.1"])
-import tensorflow as tf
 
 
 def clean_data(input_data):
@@ -47,22 +43,15 @@ def scale_data(df):
 
     
 def write(scaled_data, output_file):
-    tf_record_writer = tf.io.TFRecordWriter(output_file)
-
-    for _, x in enumerate(scaled_data):
-        all_features = collections.OrderedDict()
-        all_features["demand"] = tf.train.Feature(
-            float_list=tf.train.FloatList(value=x))
-        tf_record = tf.train.Example(features=tf.train.Features(feature=all_features))
-        tf_record_writer.write(tf_record.SerializeToString())
-    tf_record_writer.close()
+    scaled_data.tofile(output_file)
 
 
 def transform(args):
     df, categories = clean_data(args.input)
     scaled, scaler = scale_data(df)
     write(scaled, args.output)
-    
+    print(scaled)
+    print('done')
     
 def parse_args():
     parser = argparse.ArgumentParser(description="Process")
