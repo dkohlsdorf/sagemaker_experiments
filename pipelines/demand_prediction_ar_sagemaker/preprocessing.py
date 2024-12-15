@@ -8,12 +8,12 @@ import sys
 import argparse
 import pandas as pd
 import collections
-import tensorflow as tf
 from sklearn.preprocessing import MinMaxScaler    
 
 
 import subprocess
 subprocess.check_call([sys.executable, "-m", "pip", "install", "tensorflow==2.3.1"])
+import tensorflow as tf
 
 
 def clean_data(input_data):
