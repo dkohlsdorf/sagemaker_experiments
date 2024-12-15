@@ -40,7 +40,7 @@ def schedule():
         ],
         arguments=[
             "--input",
-            "/opt/ml/processing/input/data/historical.csv",
+            "/opt/ml/processing/input/data/historic.py",
             "--output",
             "/opt/ml/processing/output/x_notebook.csv"
         ]
