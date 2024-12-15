@@ -12,6 +12,10 @@ import tensorflow as tf
 from sklearn.preprocessing import MinMaxScaler    
 
 
+import subprocess
+subprocess.check_call([sys.executable, "-m", "pip", "install", "tensorflow==2.3.1"])
+
+
 def clean_data(input_data):
     df = pd.read_csv(input_data)
     categories = {c: i for i, c in enumerate(set(df.Product_Category))}
