@@ -68,12 +68,13 @@ def data(paths, History=4, Horizon=4):
 
 def train(X, y, latent=32, History=4):
     model = AutoRegressive(latent, History)
-    model.summary()
 
     early_stopping = EarlyStopping(monitor='val_loss', patience=15, restore_best_weights=True)
     opt = Adam(learning_rate=0.01)
     model.compile(loss='mean_squared_error', optimizer=opt, metrics=[RootMeanSquaredError()])
     model.fit(X, y, batch_size=8, epochs=250)
+    model.summary()
+
     return model
 
 
