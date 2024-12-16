@@ -41,19 +41,20 @@ class AutoRegressive(tf.keras.Model):
     predictions = tf.transpose(predictions, [1, 0, 2])
     return predictions
     
-    
+
 def decode_fn(record_bytes):
   return tf.io.parse_single_example(record_bytes, {"demand": tf.io.FixedLenFeature([], dtype=tf.float32),})
 
 
 def data(path, History=4, Horizon=4):
-    inputs = []
-    predictions = []
-
     X = [] 
+    print(f">>> {path}")
     for batch in tf.data.TFRecordDataset([path]).map(decode_fn):
         X.append(batch)
         print(f" >>> {batch}")
+
+    inputs = []
+    predictions = []
     for i in range(History, len(X)-Horizon):
         x = X[i-History:i]
         y = X[i:i+Horizon]
