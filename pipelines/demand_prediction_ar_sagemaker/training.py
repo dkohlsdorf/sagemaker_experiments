@@ -75,7 +75,7 @@ def write(model):
 def parse_args():
     parser = argparse.ArgumentParser(description="Process")
     parser.add_argument(
-        "--input",
+        "--train_data",
         type=str,
     )
     return parser.parse_args()
@@ -83,7 +83,7 @@ def parse_args():
 
 if __name__ == '__main__':
     args  = parse_args()
-    raw   = load_from_s3(args.input)
+    raw   = load_from_s3(args.training_input)
     print(raw)
     X, y  = data(raw)
     model = train(X, y)
