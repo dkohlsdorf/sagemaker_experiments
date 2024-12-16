@@ -1,8 +1,6 @@
 import boto3
 import sagemaker
 import time
-from smexperiments.experiment import Experiment
-from smexperiments.trial import Trial
 from sagemaker.processing import ProcessingInput, ProcessingOutput
 from sagemaker.sklearn.processing import SKLearnProcessor
 
