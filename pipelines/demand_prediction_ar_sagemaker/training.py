@@ -40,26 +40,28 @@ class AutoRegressive(tf.keras.Model):
     predictions = tf.stack(predictions)
     predictions = tf.transpose(predictions, [1, 0, 2])
     return predictions
+    
+    
+def decode_fn(record_bytes):
+  return tf.io.parse_single_example(record_bytes, {"demand": tf.io.FixedLenFeature([], dtype=tf.float32),})
 
 
-def load_from_s3(path):
-    # TODO read from tfrecord 
-    # https://www.tensorflow.org/api_docs/python/tf/data/TFRecordDataset
-    s3 = S3FileSystem()
-    print(path)
-    scaled_data = np.load(s3.open(path))
-    return scaled_data
-
-
-def data(X, History=4, Horizon=4):
+def data(path, History=4, Horizon=4):
     inputs = []
     predictions = []
+
+    X = [] 
+    for batch in tf.data.TFRecordDataset([path]).map(decode_fn):
+        X.append(batch)
+        print(f" >>> {batch}")
     for i in range(History, len(X)-Horizon):
         x = X[i-History:i]
         y = X[i:i+Horizon]
         inputs.append(x)
         predictions.append(y)
-    return np.array(inputs), np.array(predictions)        
+    x, y = np.array(inputs), np.array(predictions)
+    print(f" >>>> {x.shape} {y.shape}")
+    return x, y     
 
 
 def train(X, y, latent=32, History=4):
@@ -89,9 +91,7 @@ def parse_args():
 
 if __name__ == '__main__':
     args  = parse_args()
-    raw   = load_from_s3(args.train_data)
-    print(raw)
-    X, y  = data(raw)
+    X, y  = data(args.train_data)
     model = train(X, y)
     write(model)
 

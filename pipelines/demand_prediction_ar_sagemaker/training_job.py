@@ -1,5 +1,5 @@
 '''
-sagemaker-user@default:~/sagemaker_experiments/pipelines/demand_prediction_ar_sagemaker$ python training_job.py --train_data s3://sagemaker-eu-north-1-354918397522/sagemaker-scikit-learn-2024-12-16-17-09-19-386/output/train_data/output_pipeline.csv
+python training_job.py --train_data s3://sagemaker-eu-north-1-354918397522/sagemaker-scikit-learn-2024-12-16-18-25-39-921/output/train_data/output_pipeline.tfrecord
 '''
 import argparse
 import sagemaker
