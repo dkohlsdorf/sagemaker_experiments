@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import argparse
 
@@ -48,7 +49,7 @@ def decode_fn(record_bytes):
 
 def data(path, History=4, Horizon=4):
     X = [] 
-    print(f">>> {path}")
+    print(f"F2 >>> {path}")
     for batch in tf.data.TFRecordDataset([path]).map(decode_fn):
         X.append(batch)
         print(f" >>> {batch}")
@@ -85,6 +86,7 @@ def parse_args():
     parser.add_argument(
         "--train_data",
         type=str,
+        default=os.environ["SM_CHANNEL_TRAIN"]
     )
     args, _ = parser.parse_known_args()
     return args
