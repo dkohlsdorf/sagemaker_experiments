@@ -50,7 +50,6 @@ def decode_fn(record_bytes):
 
 def data(paths, History=4, Horizon=4):
     X = [] 
-    print(f"F2 >>> {path}")
     for batch in tf.data.TFRecordDataset(paths).map(decode_fn):
         X.append(batch)
         print(f" >>> {batch}")
