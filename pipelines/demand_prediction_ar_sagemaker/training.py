@@ -47,10 +47,10 @@ def decode_fn(record_bytes):
   return tf.io.parse_single_example(record_bytes, {"demand": tf.io.FixedLenFeature([], dtype=tf.float32),})
 
 
-def data(path, History=4, Horizon=4):
+def data(paths, History=4, Horizon=4):
     X = [] 
     print(f"F2 >>> {path}")
-    for batch in tf.data.TFRecordDataset([path]).map(decode_fn):
+    for batch in tf.data.TFRecordDataset(paths).map(decode_fn):
         X.append(batch)
         print(f" >>> {batch}")
 
@@ -94,7 +94,11 @@ def parse_args():
 
 if __name__ == '__main__':
     args  = parse_args()
-    X, y  = data(args.train_data)
+    train_data = args.train_data
+    train_data_filenames = glob(os.path.join(train_data, "*.tfrecord"))
+    print("train_data_filenames {}".format(train_data_filenames))
+
+    X, y  = data(train_data)
     model = train(X, y)
     write(model)
 
