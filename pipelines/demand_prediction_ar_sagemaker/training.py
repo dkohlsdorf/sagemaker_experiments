@@ -43,6 +43,7 @@ class AutoRegressive(tf.keras.Model):
 
 
 def load_from_s3(path):
+    # TODO read from tfrecord
     s3 = S3FileSystem()
     print(path)
     scaled_data = np.load(s3.open(path))
