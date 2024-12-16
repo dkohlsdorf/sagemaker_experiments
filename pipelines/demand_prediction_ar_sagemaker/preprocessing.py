@@ -4,7 +4,7 @@ Demo script for preprocessing adjusted from:
 https://github.com/data-science-on-aws/data-science-on-aws/blob/oreilly-book/06_prepare/preprocess-scikit-text-to-bert-feature-store.py#L394
 ''' 
 import subprocess
-
+import sys
 # This is 2.3.0 (vs. 2.3.1 everywhere else) because we need to
 # use anaconda and anaconda only supports 2.3.0 at this time
 #subprocess.check_call([sys.executable, "-m", "conda", "install", "-c", "anaconda", "tensorflow==2.3.0", "-y"])
@@ -12,7 +12,6 @@ subprocess.check_call([sys.executable, "-m", "pip", "install", "tensorflow==2.3.
 
 import tensorflow as tf
 
-import sys
 import argparse
 import pandas as pd
 import collections
