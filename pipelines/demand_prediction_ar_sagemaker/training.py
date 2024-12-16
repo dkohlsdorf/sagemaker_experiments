@@ -80,12 +80,13 @@ def parse_args():
         "--train_data",
         type=str,
     )
-    return parser.parse_args()
+    args, _ = parser.parse_known_args()
+    return args
 
 
 if __name__ == '__main__':
     args  = parse_args()
-    raw   = load_from_s3(args.training_input)
+    raw   = load_from_s3(args.train_data)
     print(raw)
     X, y  = data(raw)
     model = train(X, y)

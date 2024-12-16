@@ -49,7 +49,6 @@ def parse_args():
     args, _ = parser.parse_known_args()
     return args
 
-
 if __name__ == '__main__':
     args = parse_args()
     data = args.train_data
