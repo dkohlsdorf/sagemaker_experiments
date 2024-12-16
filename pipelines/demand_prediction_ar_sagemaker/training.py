@@ -78,7 +78,12 @@ def train(X, y, latent=32, History=4):
 
 
 def write(model):
-    model.save('./tensorflow/', save_format='tf')
+    local_model_dir = os.environ["SM_MODEL_DIR"]
+    tensorflow_saved_model_path = os.path.join(local_model_dir, "tensorflow/saved_model/0")
+    os.makedirs(tensorflow_saved_model_path, exist_ok=True)
+
+    print("tensorflow_saved_model_path {}".format(tensorflow_saved_model_path))
+    model.save(tensorflow_saved_model_path, include_optimizer=False, overwrite=True, save_format="tf")
 
 
 def parse_args():
