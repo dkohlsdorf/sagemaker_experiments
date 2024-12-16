@@ -98,7 +98,7 @@ if __name__ == '__main__':
     train_data_filenames = glob(os.path.join(train_data, "*.tfrecord"))
     print("train_data_filenames {}".format(train_data_filenames))
 
-    X, y  = data(train_data)
+    X, y  = data(train_data_filenames)
     model = train(X, y)
     write(model)
 
