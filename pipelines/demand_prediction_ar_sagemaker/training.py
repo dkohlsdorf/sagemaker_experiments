@@ -51,9 +51,8 @@ def decode_fn(record_bytes):
 def data(paths, History=4, Horizon=4):
     X = [] 
     for batch in tf.data.TFRecordDataset(paths).map(decode_fn):
-        X.append(batch)
+        X.append(batch['demand'])
         print(f" >>> {batch}")
-
     inputs = []
     predictions = []
     for i in range(History, len(X)-Horizon):
@@ -61,7 +60,7 @@ def data(paths, History=4, Horizon=4):
         y = X[i:i+Horizon]
         inputs.append(x)
         predictions.append(y)
-    x, y = np.array(inputs), np.array(predictions)
+    x, y = tf.stack(inputs), tf.stack(predictions)
     print(f" >>>> {x.shape} {y.shape}")
     return x, y     
 
