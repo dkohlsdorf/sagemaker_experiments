@@ -26,6 +26,7 @@ def main(data):
         py_version="py37",
         framework_version="2.3.1",
         role=role,
+        input_mode = "File"
     )
     estimator.fit(inputs={
         'train': s3_input
@@ -52,4 +53,5 @@ def parse_args():
 if __name__ == '__main__':
     args = parse_args()
     data = args.train_data
+    print(f" >>>> F1: {data}")
     main(data)
