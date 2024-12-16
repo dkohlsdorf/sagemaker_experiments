@@ -3,6 +3,14 @@ Demo script for preprocessing adjusted from:
 
 https://github.com/data-science-on-aws/data-science-on-aws/blob/oreilly-book/06_prepare/preprocess-scikit-text-to-bert-feature-store.py#L394
 ''' 
+import subprocess
+
+# This is 2.3.0 (vs. 2.3.1 everywhere else) because we need to
+# use anaconda and anaconda only supports 2.3.0 at this time
+#subprocess.check_call([sys.executable, "-m", "conda", "install", "-c", "anaconda", "tensorflow==2.3.0", "-y"])
+subprocess.check_call([sys.executable, "-m", "pip", "install", "tensorflow==2.3.1"])
+
+import tensorflow as tf
 
 import sys
 import argparse
@@ -43,7 +51,14 @@ def scale_data(df):
 
     
 def write(scaled_data, output_file):
-    scaled_data.tofile(output_file)
+    records = []
+    tf_record_writer = tf.io.TFRecordWriter(output_file)
+    for _, x in enumerate(scaled_data):
+        all_features = collections.OrderedDict()
+        all_features["demand"] = tf.train.Feature(float_list=tf.train.FloatList(value=list(x)))
+        tf_record = tf.train.Example(features=tf.train.Features(feature=all_features))
+        tf_record_writer.write(tf_record.SerializeToString())
+    tf_record_writer.close()
 
 
 def transform(args):
@@ -52,7 +67,7 @@ def transform(args):
     write(scaled, args.output)
     print(scaled)
     print('done')
-    
+
     
 def parse_args():
     parser = argparse.ArgumentParser(description="Process")

@@ -41,7 +41,7 @@ def schedule():
             "--input",
             "/opt/ml/processing/input/data/historic.py",
             "--output",
-            f"/opt/ml/processing/output/output_pipeline.csv"
+            f"/opt/ml/processing/output/output_pipeline.tfrecord"
         ],
         logs=True,
         wait=False,
