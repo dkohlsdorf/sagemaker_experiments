@@ -45,7 +45,7 @@ class AutoRegressive(tf.keras.Model):
     
 
 def decode_fn(record_bytes):
-  return tf.io.parse_single_example(record_bytes, {"demand": tf.io.FixedLenFeature([], dtype=tf.float32),})
+  return tf.io.parse_single_example(record_bytes, {"demand": tf.io.FixedLenSequenceFeature([], dtype=tf.float32),})
 
 
 def data(paths, History=4, Horizon=4):
