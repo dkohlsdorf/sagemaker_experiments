@@ -7,8 +7,8 @@ import subprocess
 import sys
 # This is 2.3.0 (vs. 2.3.1 everywhere else) because we need to
 # use anaconda and anaconda only supports 2.3.0 at this time
-# subprocess.check_call([sys.executable, "-m", "conda", "install", "-c", "anaconda", "tensorflow==2.3.0", "-y"])
-subprocess.check_call([sys.executable, "-m", "pip", "install", "tensorflow==2.3.1"])
+subprocess.check_call([sys.executable, "-m", "conda", "install", "-c", "anaconda", "tensorflow==2.3.0", "-y"])
+# subprocess.check_call([sys.executable, "-m", "pip", "install", "tensorflow==2.3.1"])
 
 import tensorflow as tf
 
