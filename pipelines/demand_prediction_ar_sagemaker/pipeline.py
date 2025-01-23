@@ -1,6 +1,7 @@
 import sagemaker
 import urllib3
 from pprint import pprint
+import boto3
 
 from sagemaker.tensorflow import TensorFlow
 from sagemaker.inputs import TrainingInput
@@ -12,7 +13,7 @@ from sagemaker.workflow.pipeline import Pipeline
 from sagemaker import session
 
 
-PROCESSING_INSTANCE = "ml.m5.xlarge"
+PROCESSING_INSTANCE = "ml.c5.2xlarge"
 PROCESSING_INSTANCE_COUNT = 1
 
 TRAINING_INSTANCE_COUNT = 1
@@ -26,15 +27,16 @@ def input(raw_input_data_s3_uri):
     )
 
 
-def preprocessing(input, role):
+def preprocessing(input, role, region):
     return ProcessingStep(
         name='FeatureExtraction',
         code="preprocessing.py",
         processor=SKLearnProcessor(
-            framework_version="0.20.0",
+            framework_version="0.23-1",
             role=role,
             instance_type=PROCESSING_INSTANCE,
             instance_count=PROCESSING_INSTANCE_COUNT,
+            env={"AWS_DEFAULT_REGION": region},
         ),
         inputs = [
             ProcessingInput(
@@ -73,8 +75,8 @@ def training(data, role):
     )
     
 
-def create_pipeline(sess, input, role):
-    features = preprocessing(input, role) 
+def create_pipeline(sess, input, role, region):
+    features = preprocessing(input, role, region) 
 
     train = training(features.properties.ProcessingOutputConfig.Outputs['train_data'].S3Output.S3Uri, role)
     return Pipeline(
@@ -89,9 +91,11 @@ def main():
     sess = sagemaker.Session()
     bucket = sess.default_bucket()
     role = sagemaker.get_execution_role()
+    region = boto3.Session().region_name
+
     print(f" >>>> {role}")
     raw_input_data_s3_uri = f's3://{bucket}/historic.py'
-    pipeline = create_pipeline(sess, input(raw_input_data_s3_uri), role)
+    pipeline = create_pipeline(sess, input(raw_input_data_s3_uri), role, region)
     response = pipeline.upsert(role_arn=role,description="local pipeline example")
     pipeline_arn = response["PipelineArn"]
     print(pipeline_arn)
