@@ -1,4 +1,5 @@
 import sagemaker
+import urllib3
 from pprint import pprint
 
 from sagemaker.tensorflow import TensorFlow
@@ -74,7 +75,8 @@ def training(data, role):
 
 def create_pipeline(sess, input, role):
     features = preprocessing(input, role) 
-    train = training(features.properties.ProcessingOutputConfig.Outputs['train_data'], role)
+
+    train = training(features.properties.ProcessingOutputConfig.Outputs['train_data'].S3Output.S3Uri, role)
     return Pipeline(
         name = "DemandPrediction",
         parameters = [input],
@@ -89,8 +91,8 @@ def main():
     role = sagemaker.get_execution_role()
     print(f" >>>> {role}")
     raw_input_data_s3_uri = f's3://{bucket}/historic.py'
-    pipeline = create_pipeline(sess, input, role)
-    pipeline.create(role_arn=role,description="local pipeline example")
+    pipeline = create_pipeline(sess, input(raw_input_data_s3_uri), role)
+    response = pipeline.upsert(role_arn=role,description="local pipeline example")
     pipeline_arn = response["PipelineArn"]
     print(pipeline_arn)
     execution = pipeline.start(
